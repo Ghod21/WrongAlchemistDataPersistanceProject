@@ -18,6 +18,7 @@ public class MainManager : MonoBehaviour
     public int HighScore;
     public bool objectsSet;
     public bool saved;
+    public bool correctName;
 
     void Start()
     {
@@ -40,6 +41,10 @@ public class MainManager : MonoBehaviour
         if (userName != null)
         {
             userNameText = userName.text;
+        }
+        if (userNameText.Length >= 3 && userNameText.Length <= 10)
+        {
+            correctName = true;
         }
 
         currentScore = Counter.Instance.Count;

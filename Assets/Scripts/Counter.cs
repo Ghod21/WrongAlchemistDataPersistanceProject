@@ -43,6 +43,8 @@ public class Counter : MonoBehaviour
         {
             levelStarted = true;
             MainManager.Instance.objectsSet = false;
+            MainManager.Instance.saved = false;
+            MainManager.Instance.correctName = false;
         }
     }
 
@@ -123,7 +125,10 @@ public class Counter : MonoBehaviour
 
     public void StartLevel()
     {
-        SceneManager.LoadScene(1);
+        if (MainManager.Instance.correctName)
+        {
+            SceneManager.LoadScene(1);
+        }    
     }
 
     public void Exit()

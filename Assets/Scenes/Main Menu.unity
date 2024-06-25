@@ -367,6 +367,8 @@ MonoBehaviour:
   leaderNameText: 
   currentScore: 0
   HighScore: 0
+  objectsSet: 0
+  saved: 0
 --- !u!4 &253236243
 Transform:
   m_ObjectHideFlags: 0
@@ -4314,6 +4316,8 @@ MonoBehaviour:
   yourScoreEnd: {fileID: 924822640}
   restartText: {fileID: 1523463520}
   logo: {fileID: 1619786028}
+  leaderText: {fileID: 0}
+  name: {fileID: 0}
   restartButton: {fileID: 1594229522}
   audioSource: {fileID: 1648811354}
   audioClips:
