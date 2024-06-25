@@ -5,9 +5,12 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class Counter : MonoBehaviour
 {
+    public static Counter Instance;
+
     public TextMeshProUGUI counterText;
     public TextMeshProUGUI difficultyText;
     public TextMeshProUGUI streak;
@@ -15,6 +18,8 @@ public class Counter : MonoBehaviour
     public TextMeshProUGUI yourScoreEnd;
     public TextMeshProUGUI restartText;
     public TextMeshProUGUI logo;
+    public TextMeshProUGUI leaderText;
+    public TextMeshProUGUI name;
     public Button restartButton;
     public AudioSource audioSource;
     public AudioClip[] audioClips;
@@ -31,29 +36,28 @@ public class Counter : MonoBehaviour
 
     private void Start()
     {
+        Instance = this;
         Count = 0;
         healthLeft = 3;
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            levelStarted = true;
+            MainManager.Instance.objectsSet = false;
+        }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && SceneManager.GetActiveScene().buildIndex == 1)
         {
-            Restart();
+            SceneManager.LoadScene(0);
         }
-        // Проверяем, есть ли касание на экране
-        if (Input.touchCount > 0 && healthLeft == 0)
-        {
-            // Получаем первое касание
-            Touch touch = Input.GetTouch(0);
 
-            // Проверяем фазу касания (начало касания)
-            if (touch.phase == TouchPhase.Began)
-            {
-                // Вызываем событие A
-                Restart();
-            }
+        if (leaderText != null)
+        {
+            leaderText.text = "Leader: " + MainManager.Instance.leaderNameText + " " + MainManager.Instance.HighScore;
         }
+
 
         if (healthLeft > 0 && levelStarted)
         {
@@ -65,9 +69,10 @@ public class Counter : MonoBehaviour
             restartText.gameObject.SetActive(false);
             restartButton.gameObject.SetActive(false);
             logo.gameObject.SetActive(false);
+            name.text = MainManager.Instance.userNameText;
             if (counterText != null)
             {
-                counterText.text = "Score : " + Count;
+                counterText.text = "Score " + Count;
             }
             if (gameStreakLevel == 0)
             {
@@ -105,7 +110,8 @@ public class Counter : MonoBehaviour
             difficultyText.gameObject.SetActive(false);
             yourScoreEnd.gameObject.SetActive(true);
             restartText.gameObject.SetActive(true);
-            yourScoreEnd.text = "Your Score: " + lastScore;
+            name.gameObject.SetActive(false);
+            yourScoreEnd.text = "Your Score: " + MainManager.Instance.userNameText + " " + lastScore;
         }
 
         if (!lossSoundPlayed && healthLeft == 0)
@@ -115,16 +121,20 @@ public class Counter : MonoBehaviour
         }
     }
 
-    private void Restart()
-    {
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
-    }
-
     public void StartLevel()
     {
-        levelStarted = true;
-        audioSource.PlayOneShot(audioClips[0], 0.4f);
+        SceneManager.LoadScene(1);
+    }
+
+    public void Exit()
+    {
+        MainManager.Instance.SaveName();
+
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit(); // original code to quit Unity player
+#endif
     }
 }
 
